@@ -9,18 +9,23 @@ namespace com.pacyga.ui
 		private float SCALE_AMOUNT = .1f;
 
 		private ObjectManager _objectManager;
-		
+		private MouseManager _mouseManager;
+
 		void Start () 
 		{
 			GameObject managers = GameObject.Find("Managers");
 			_objectManager = managers.GetComponent<ObjectManager>();
+			_mouseManager = managers.GetComponent<MouseManager>();
 		}
 		
-		void OnMouseUp()
+		void Update()
 		{
-			Vector3 scale = _objectManager._selectedGameObject.transform.localScale;
-			Vector3 newScale = new Vector3((scale.x - SCALE_AMOUNT), (scale.y - SCALE_AMOUNT), (scale.z - SCALE_AMOUNT));
-			_objectManager._selectedGameObject.transform.localScale = newScale;
+			if (Input.GetMouseButtonUp(0) && _mouseManager.didRaycastHitState && _mouseManager.raycastHit.collider == collider)
+			{
+				Vector3 scale = _objectManager._selectedGameObject.transform.localScale;
+				Vector3 newScale = new Vector3((scale.x - SCALE_AMOUNT), (scale.y - SCALE_AMOUNT), (scale.z - SCALE_AMOUNT));
+				_objectManager._selectedGameObject.transform.localScale = newScale;
+			}
 		} 
 	}
 }

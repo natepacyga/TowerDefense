@@ -11,6 +11,7 @@ namespace com.pacyga.controller
 		protected ObjectManager _objectManager;
 		protected UIManager _uiManager;
 		protected GameManager _gameManager;
+		protected MouseManager _mouseManager;
 
 		public bool activeGameObject = false;
 		
@@ -20,22 +21,23 @@ namespace com.pacyga.controller
 			_objectManager = managers.GetComponent<ObjectManager>();
 			_uiManager = managers.GetComponent<UIManager>();
 			_gameManager = managers.GetComponent<GameManager>();
+			_mouseManager = managers.GetComponent<MouseManager>();
 
 			if (activeGameObject)
 			{
 				onPurchase();
 			}
 		}
-		
-		void OnMouseUp()
-		{
-			_objectManager.setSelectedGameObject(gameObject);
-			_uiManager.showGameObjectEditUI();
-			_uiManager.setGameObjectEditUITransformRelativeTo(transform);
-		}
 
 		protected virtual void Update()
 		{
+			if (Input.GetMouseButtonUp(0) && _mouseManager.didRaycastHitState && _mouseManager.raycastHit.collider == collider)
+			{
+				_objectManager.setSelectedGameObject(gameObject);
+				_uiManager.showGameObjectEditUI();
+				_uiManager.setGameObjectEditUITransformRelativeTo(transform);
+			}
+
 			if (health <= 0)
 			{
 				Destroy(gameObject);

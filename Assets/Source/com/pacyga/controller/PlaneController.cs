@@ -6,61 +6,35 @@ namespace com.pacyga.controller
 {
 	public class PlaneController : MonoBehaviour 
 	{
-		
-		public ObjectManager objectManager;
-		private bool _showPreviewObject = false;
+		private MouseManager _mouseManager;
+		private ObjectManager _objectManager;
 
 		private RaycastHit _raycastHit;
 		
 		void Start () 
 		{
 			GameObject managers = GameObject.Find("Managers");
-			objectManager = managers.GetComponent<ObjectManager>();
+			_objectManager = managers.GetComponent<ObjectManager>();
+			_mouseManager = managers.GetComponent<MouseManager>();
 		}
 		
 		void Update()
 		{
-			if (_showPreviewObject) 
+			bool didRaycastHit = _mouseManager.didRaycastHitState;
+
+			if (didRaycastHit && _mouseManager.raycastHit.collider == collider) 
 			{
-				if (didRaycastHit()) 
-				{
-					objectManager.showPreviewObject(_raycastHit.point);
-				}
+				_objectManager.showPreviewObject(_mouseManager.raycastHit.point);
 			}
 			else 
 			{
-				objectManager.hidePreviewObject();
+				_objectManager.hidePreviewObject();
 			}
-		}
-		
-		void OnMouseEnter()
-		{
-			_showPreviewObject = true;
-		}
-		
-		void OnMouseExit()
-		{
-			_showPreviewObject = false;
-		}
-		
-		void OnMouseUp()
-		{
-			if (didRaycastHit()) 
-			{
-				objectManager.instantiatePlayerGameObject(_raycastHit.point);
-			}
-		}
 
-		private bool didRaycastHit()
-		{
-			RaycastHit raycastHit = new RaycastHit();
-			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-			if (Physics.Raycast(ray, out raycastHit, 1000)) 
+			if (Input.GetMouseButtonUp(0) && didRaycastHit && _mouseManager.raycastHit.collider == collider)
 			{
-				_raycastHit = raycastHit;
-				return true;
+				_objectManager.instantiatePlayerGameObject(_mouseManager.raycastHit.point);
 			}
-			return false;
 		}
 
 	}
